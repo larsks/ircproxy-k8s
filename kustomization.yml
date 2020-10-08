@@ -1,0 +1,16 @@
+---
+namespace: ircproxy
+commonLabels:
+  app: ircproxy
+
+resources:
+  - deployment.yml
+
+configMapGenerator:
+  - name: init-scripts
+    files:
+      - init-znc.sh
+      - init-bitlbee.sh
+
+generators:
+  - ./secret-generator.yml

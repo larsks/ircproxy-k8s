@@ -1,0 +1,116 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ircproxy
+  template:
+    spec:
+      initContainers:
+        - name: init-znc
+          image: alpine/git:v2.26.2
+          command: ['sh']
+          args: ['/tmp/init/init-znc.sh']
+          volumeMounts:
+            - mountPath: /znc
+              name: znc-config
+            - mountPath: /znc-certificate
+              name: znc-certificate
+              readOnly: true
+            - mountPath: /tmp/init
+              name: init-scripts
+              readOnly: true
+            - mountPath: /tmp/deploykeys
+              name: deploykeys
+        - name: init-bitlbee
+          image: alpine/git:v2.26.2
+          command: ['sh']
+          args: ['/tmp/init/init-bitlbee.sh']
+          volumeMounts:
+            - mountPath: /bitlbee
+              name: bitlbee-config
+            - mountPath: /tmp/init
+              name: init-scripts
+              readOnly: true
+            - mountPath: /tmp/deploykeys
+              name: deploykeys
+      containers:
+        - name: znc
+          image: larsks/znc:88bc628a
+          ports:
+            - containerPort: 6667
+            - containerPort: 6697
+            - containerPort: 8443
+          volumeMounts:
+            - mountPath: /znc
+              name: znc-config
+            - mountPath: /znc-logs
+              name: znc-logs
+          command: ['sleep']
+          args: ['999']
+
+        - name: bitlbee
+          image: larsks/bitlbee:89949d3b
+          volumeMounts:
+            - mountPath: /var/lib/bitlbee
+              name: bitlbee-config
+      volumes:
+        - name: znc-config
+          persistentVolumeClaim:
+            claimName: znc-config-pvc
+        - name: znc-logs
+          persistentVolumeClaim:
+            claimName: znc-logs-pvc
+        - name: bitlbee-config
+          persistentVolumeClaim:
+            claimName: bitlbee-config-pvc
+        - name: znc-certificate
+          secret:
+            secretName: znc-certificate
+        - name: deploykeys
+          secret:
+            secretName: deploykeys
+            defaultMode: 0400
+        - name: init-scripts
+          configMap:
+            name: init-scripts
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: znc-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: znc-logs-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bitlbee-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
