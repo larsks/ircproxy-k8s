@@ -58,7 +58,9 @@ spec:
 
         - name: bitlbee
           image: larsks/bitlbee:32efe7d1
-          args: ['-p', '7667']
+          env:
+            - name: BITLBEE_DAEMONPORT
+              value: '7667'
           volumeMounts:
             - mountPath: /var/lib/bitlbee
               name: bitlbee-state
