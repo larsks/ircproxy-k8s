@@ -47,14 +47,20 @@ spec:
           ports:
             - containerPort: 6667
             - containerPort: 6697
+              hostPort: 6697
+              protocol: TCP
+              name: ircssl
             - containerPort: 8443
+              hostPort: 8443
+              protocol: TCP
+              name: zncweb
           volumeMounts:
             - mountPath: /znc
               name: znc-config
             - mountPath: /znc/moddata/log
               name: znc-logs
-          command: ['sleep']
-          args: ['999']
+#         command: ['sleep']
+#         args: ['999']
 
         - name: bitlbee
           image: larsks/bitlbee:32efe7d1
