@@ -32,7 +32,7 @@ spec:
           args: ['/tmp/init/init-bitlbee.sh']
           volumeMounts:
             - mountPath: /bitlbee
-              name: bitlbee-config
+              name: bitlbee-state
             - mountPath: /tmp/init
               name: init-scripts
               readOnly: true
@@ -53,23 +53,30 @@ spec:
               name: znc-config
             - mountPath: /znc/moddata/log
               name: znc-logs
+          command: ['sleep']
+          args: ['999']
 
         - name: bitlbee
-          image: larsks/bitlbee:89949d3b
+          image: larsks/bitlbee:32efe7d1
           args: ['-p', '7667']
           volumeMounts:
             - mountPath: /var/lib/bitlbee
+              name: bitlbee-state
+            - mountPath: /etc/bitlbee
               name: bitlbee-config
       volumes:
+        - name: bitlbee-config
+          configMap:
+            name: bitlbee-config
         - name: znc-config
           persistentVolumeClaim:
             claimName: znc-config-pvc
         - name: znc-logs
           persistentVolumeClaim:
             claimName: znc-logs-pvc
-        - name: bitlbee-config
+        - name: bitlbee-state
           persistentVolumeClaim:
-            claimName: bitlbee-config-pvc
+            claimName: bitlbee-state-pvc
         - name: znc-certificate
           secret:
             secretName: znc-certificate
@@ -108,7 +115,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: bitlbee-config-pvc
+  name: bitlbee-state-pvc
 spec:
   accessModes:
     - ReadWriteOnce
