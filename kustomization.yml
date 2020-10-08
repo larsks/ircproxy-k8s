@@ -12,9 +12,5 @@ configMapGenerator:
       - init-znc.sh
       - init-bitlbee.sh
 
-  - name: bitlbee-config
-    files:
-      - bitlbee.conf
-
 generators:
   - ./secret-generator.yml
