@@ -1,0 +1,12 @@
+---
+namespace: ircproxy
+commonLabels:
+  app: ircproxy
+
+resources:
+  - deployment.yml
+
+secretGenerator:
+  - name: bitlbee-config
+    files:
+      - bitlbee.conf

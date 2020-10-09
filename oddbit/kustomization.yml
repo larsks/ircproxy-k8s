@@ -3,8 +3,8 @@ namespace: ircproxy
 commonLabels:
   app: ircproxy
 
-resources:
-  - deployment.yml
+bases:
+  - ../base
 
 configMapGenerator:
   - name: init-scripts
@@ -14,3 +14,9 @@ configMapGenerator:
 
 generators:
   - ./secret-generator.yml
+
+patches:
+  - path: patch_deployment.yml
+    target:
+      kind: Deployment
+      name: ircproxy

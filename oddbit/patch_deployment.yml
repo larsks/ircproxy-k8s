@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircproxy
+spec:
+  template:
+    spec:
+      volumes:
+        - name: deploykeys
+          secret:
+            secretName: deploykeys
+            defaultMode: 0400
+        - name: init-scripts
+          configMap:
+            name: init-scripts
+      initContainers:
+        - name: init-znc
+          image: alpine/git:v2.26.2
+          command: ['sh']
+          args: ['/tmp/init/init-znc.sh']
+          volumeMounts:
+            - mountPath: /znc
+              name: znc-config
+            - mountPath: /znc-certificate
+              name: znc-certificate
+              readOnly: true
+            - mountPath: /tmp/init
+              name: init-scripts
+              readOnly: true
+            - mountPath: /tmp/deploykeys
+              name: deploykeys
+        - name: init-bitlbee
+          image: alpine/git:v2.26.2
+          command: ['sh']
+          args: ['/tmp/init/init-bitlbee.sh']
+          volumeMounts:
+            - mountPath: /bitlbee
+              name: bitlbee-state
+            - mountPath: /tmp/init
+              name: init-scripts
+              readOnly: true
+            - mountPath: /tmp/deploykeys
+              name: deploykeys
