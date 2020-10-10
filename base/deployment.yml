@@ -28,7 +28,7 @@ spec:
             - mountPath: /znc-data/moddata/log
               name: znc-logs
         - name: bitlbee
-          image: larsks/bitlbee:32efe7d1
+          image: larsks/bitlbee:bitlbee_3_6_20201010_00
           volumeMounts:
             - mountPath: /var/lib/bitlbee
               name: bitlbee-state
