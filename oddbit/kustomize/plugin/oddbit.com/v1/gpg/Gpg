@@ -1,0 +1,68 @@
+#!/usr/bin/python
+
+import argparse
+import gpg
+import sys
+import yaml
+
+
+class NoValidSignature(Exception):
+    def __str__(self):
+        return 'No valid signature: {}'.format(super().__str__())
+
+
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument('--debug', action='store_true')
+    p.add_argument('config')
+    return p.parse_args()
+
+
+def output_one_object(path, config):
+    with open(path, 'rb') as fd:
+        with gpg.Context() as ctx:
+            data = fd.read()
+
+            try:
+                plaintext, result, verify_result = ctx.decrypt(data)
+            except gpg.errors.GPGMEError as err:
+                if err.code == gpg.errors.NO_DATA:
+                    plaintext, verify_result = ctx.verify(data)
+
+            if config.get('requireValidSignature'):
+                if not verify_result.signatures:
+                    raise NoValidSignature(path)
+
+            parsed = yaml.safe_load(plaintext)
+            if 'behavior' in config:
+                annotations = parsed.setdefault('metadata', {}).setdefault('annotations', {})
+                annotations['kustomize.config.k8s.io/behavior'] = config['behavior']
+            yield yaml.safe_dump(parsed)
+
+
+def output_all_objects(configs):
+    for config in configs:
+        for path in config.get('files', []):
+            yield from output_one_object(path, config)
+
+
+def main():
+    args = parse_args()
+    with open(args.config) as fd:
+        configs = yaml.safe_load_all(fd)
+
+        try:
+            print('---\n'.join(output_all_objects(configs)))
+        except Exception as err:
+            if args.debug:
+                raise
+            else:
+                print('ERROR:', err, file=sys.stderr)
+            
+            return 1
+
+        return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
