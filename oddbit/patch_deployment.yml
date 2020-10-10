@@ -14,15 +14,24 @@ spec:
         - name: init-scripts
           configMap:
             name: init-scripts
+        - name: bitlbee-config
+          secret:
+            secretName: bitlbee-config
+        - name: znc-config
+          persistentVolumeClaim:
+            claimName: znc-config-pvc
+        - name: znc-certificate
+          secret:
+            secretName: znc-certificate
       initContainers:
         - name: init-znc
           image: alpine/git:v2.26.2
           command: ['sh']
           args: ['/tmp/init/init-znc.sh']
           volumeMounts:
-            - mountPath: /znc
-              name: znc-config
-            - mountPath: /znc-certificate
+            - mountPath: /znc-data
+              name: znc-state
+            - mountPath: /data/znc-certificate
               name: znc-certificate
               readOnly: true
             - mountPath: /tmp/init
@@ -35,10 +44,15 @@ spec:
           command: ['sh']
           args: ['/tmp/init/init-bitlbee.sh']
           volumeMounts:
-            - mountPath: /bitlbee
+            - mountPath: /var/lib/bitlbee
               name: bitlbee-state
             - mountPath: /tmp/init
               name: init-scripts
               readOnly: true
             - mountPath: /tmp/deploykeys
               name: deploykeys
+      containers:
+        - name: bitlbee
+          volumeMounts:
+            - mountPath: /etc/bitlbee
+              name: bitlbee-config
