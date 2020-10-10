@@ -12,56 +12,41 @@ spec:
     spec:
       containers:
         - name: znc
-          image: larsks/znc:88bc628a
-          env:
-            - name: ZNCDIR
-              value: /znc
+          image: larsks/znc:znc_1_8_20201010_00
           ports:
-            - containerPort: 6667
             - containerPort: 6697
               hostPort: 6697
               protocol: TCP
-              name: ircssl
+              name: irc-ssl
             - containerPort: 8443
               hostPort: 8443
               protocol: TCP
-              name: zncweb
+              name: web-ssl
           volumeMounts:
-            - mountPath: /znc
-              name: znc-config
-            - mountPath: /znc/moddata/log
+            - mountPath: /znc-data
+              name: znc-state
+            - mountPath: /znc-data/moddata/log
               name: znc-logs
         - name: bitlbee
           image: larsks/bitlbee:32efe7d1
-          env:
-            - name: BITLBEE_DAEMONPORT
-              value: '7667'
           volumeMounts:
             - mountPath: /var/lib/bitlbee
               name: bitlbee-state
-            - mountPath: /etc/bitlbee
-              name: bitlbee-config
       volumes:
-        - name: bitlbee-config
-          secret:
-            secretName: bitlbee-config
-        - name: znc-config
+        - name: znc-state
           persistentVolumeClaim:
-            claimName: znc-config-pvc
+            claimName: znc-state-pvc
         - name: znc-logs
           persistentVolumeClaim:
             claimName: znc-logs-pvc
         - name: bitlbee-state
           persistentVolumeClaim:
             claimName: bitlbee-state-pvc
-        - name: znc-certificate
-          secret:
-            secretName: znc-certificate
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: znc-config-pvc
+  name: znc-state-pvc
 spec:
   accessModes:
     - ReadWriteOnce

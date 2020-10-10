@@ -5,8 +5,3 @@ commonLabels:
 
 resources:
   - deployment.yml
-
-secretGenerator:
-  - name: bitlbee-config
-    files:
-      - bitlbee.conf
