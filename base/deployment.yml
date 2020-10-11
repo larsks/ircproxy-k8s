@@ -17,11 +17,9 @@ spec:
           image: larsks/znc:6b88d3ed
           ports:
             - containerPort: 6697
-              hostPort: 6697
               protocol: TCP
               name: irc-ssl
             - containerPort: 8443
-              hostPort: 8443
               protocol: TCP
               name: web-ssl
           volumeMounts:

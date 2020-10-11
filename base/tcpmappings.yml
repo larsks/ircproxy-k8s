@@ -1,0 +1,15 @@
+apiVersion: getambassador.io/v2
+kind: TCPMapping
+metadata:
+  name: irc-ssl
+spec:
+  port: 6697
+  service: irc-ssl.ircproxy:6697
+---
+apiVersion: getambassador.io/v2
+kind: TCPMapping
+metadata:
+  name: web-ssl
+spec:
+  port: 8443
+  service: web-ssl.ircproxy:8443
