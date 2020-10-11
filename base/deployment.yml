@@ -8,6 +8,8 @@ spec:
   selector:
     matchLabels:
       app: ircproxy
+  strategy:
+    type: Recreate
   template:
     spec:
       containers:
@@ -30,7 +32,7 @@ spec:
         - name: bitlbee
           securityContext:
             runAsUser: 1000
-          image: larsks/bitlbee:5ff9ff05
+          image: larsks/bitlbee:e06fc8a3
           volumeMounts:
             - mountPath: /var/lib/bitlbee
               name: bitlbee-state
