@@ -28,6 +28,8 @@ spec:
           volumeMounts:
             - mountPath: /znc-data
               name: znc-state
+            - mountPath: /znc-data/moddata/log
+              name: znc-logs
             - mountPath: /data/znc-certificate
               name: znc-certificate
               readOnly: true
