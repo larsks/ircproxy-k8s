@@ -17,9 +17,6 @@ spec:
         - name: bitlbee-config
           secret:
             secretName: bitlbee-config
-        - name: znc-config
-          persistentVolumeClaim:
-            claimName: znc-config-pvc
         - name: znc-certificate
           secret:
             secretName: znc-certificate
