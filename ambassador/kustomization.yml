@@ -1,0 +1,12 @@
+namespace: ambassador
+
+resources:
+  - https://www.getambassador.io/yaml/ambassador/ambassador-crds.yaml
+  - https://www.getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+  - https://www.getambassador.io/yaml/ambassador/ambassador-service.yaml
+
+patches:
+  - path: patch_ambassador_service.yml
+    target:
+      kind: Service
+      name: ambassador

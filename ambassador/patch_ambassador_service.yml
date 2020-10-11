@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambassador
+spec:
+  ports:
+    - name: irc-ssl
+      port: 6697
+      targetPort: 6697
+    - name: web-ssl
+      port: 8443
+      targetPort: 8443
+    - name: web
+      port: 80
+      targetPort: 8080
