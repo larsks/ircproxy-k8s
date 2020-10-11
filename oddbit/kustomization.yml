@@ -7,15 +7,20 @@ bases:
   - ../base
 
 configMapGenerator:
+  # create init-scripts configmap containing the named scripts. these
+  # are used in the initContainers to initialize the znc and bitlbee
+  # configurations.
   - name: init-scripts
     files:
       - init-znc.sh
       - init-bitlbee.sh
 
 generators:
+  # decrypt sops-encrypted files
   - ./secret-generator.yml
 
 patches:
+  # update the deployment with our local changes
   - path: patch_deployment.yml
     target:
       kind: Deployment

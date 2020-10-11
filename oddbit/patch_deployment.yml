@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,20 +6,40 @@ spec:
   template:
     spec:
       volumes:
+        # ssh keys used for read-only access to private
+        # github repositories.
         - name: deploykeys
           secret:
             secretName: deploykeys
             defaultMode: 0400
+
+        # makes script from the init-scripts configmap available on
+        # the filesystem. these scripts are responsible for grabbing
+        # the initial bitlbee and znc configuration from our private
+        # github repositories.
         - name: init-scripts
           configMap:
             name: init-scripts
+
+        # exposes the bitblee-config secret as /etc/bitlbee. currently
+        # just sets bitlbee's operpassword.
         - name: bitlbee-config
           secret:
             secretName: bitlbee-config
+
+        # expose the znc ssl certificate from the znc-certificate secret
+        # on the filesystem. The znc init script will copy this into
+        # the correct location when the pod starts up.
         - name: znc-certificate
           secret:
             secretName: znc-certificate
+
       initContainers:
+        # the init-znc container will populate the znc-state volume
+        # with initial configuration (from a private github repository)
+        # if it is empty. on every startup it copies the znc ssl 
+        # certificate from the znc-certificate secret into the proper
+        # location.
         - name: init-znc
           image: alpine/git:v2.26.2
           command: ['sh']
@@ -38,6 +57,11 @@ spec:
               readOnly: true
             - mountPath: /tmp/deploykeys
               name: deploykeys
+
+
+        # the init-bitlbee container will populate the bitlbee-state volume
+        # with initial configuration (from a private github repository)
+        # if it is empty.
         - name: init-bitlbee
           image: alpine/git:v2.26.2
           command: ['sh']
@@ -51,6 +75,9 @@ spec:
             - mountPath: /tmp/deploykeys
               name: deploykeys
       containers:
+
+        # patches the bitlbee container to mount the bitlbee-config
+        # secret on /etc/bitlbee.
         - name: bitlbee
           volumeMounts:
             - mountPath: /etc/bitlbee
