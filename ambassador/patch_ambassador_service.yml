@@ -1,3 +1,5 @@
+# This patches the Ambassador LoadBalancer service to expose ports 6697
+# (irc-over-ssl) and 8443 (ZNC web ui).
 apiVersion: v1
 kind: Service
 metadata:
