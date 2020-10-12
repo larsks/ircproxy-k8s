@@ -13,6 +13,7 @@ spec:
   template:
     spec:
       containers:
+
         - name: znc
           securityContext:
             runAsUser: 1000
@@ -29,6 +30,7 @@ spec:
               name: znc-state
             - mountPath: /znc-data/moddata/log
               name: znc-logs
+
         - name: bitlbee
           securityContext:
             runAsUser: 1000
@@ -36,6 +38,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/bitlbee
               name: bitlbee-state
+
       volumes:
         - name: znc-state
           persistentVolumeClaim:
@@ -46,39 +49,3 @@ spec:
         - name: bitlbee-state
           persistentVolumeClaim:
             claimName: bitlbee-state-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: znc-state-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: znc-logs-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: bitlbee-state-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 1Gi
