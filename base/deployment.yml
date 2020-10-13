@@ -36,7 +36,7 @@ spec:
             runAsUser: 1000
           image: larsks/bitlbee:e06fc8a3
           volumeMounts:
-            - mountPath: /var/lib/bitlbee
+            - mountPath: /bitlbee-data
               name: bitlbee-state
 
       volumes:

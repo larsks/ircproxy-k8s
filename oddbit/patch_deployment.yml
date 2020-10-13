@@ -67,7 +67,7 @@ spec:
           command: ['sh']
           args: ['/tmp/init/init-bitlbee.sh']
           volumeMounts:
-            - mountPath: /var/lib/bitlbee
+            - mountPath: /bitlbee-data
               name: bitlbee-state
             - mountPath: /tmp/init
               name: init-scripts

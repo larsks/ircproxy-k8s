@@ -2,7 +2,7 @@
 
 set -e
 
-DATADIR=/var/lib/bitlbee
+DATADIR=/bitlbee-data
 
 if [ ! -d $DATADIR/larsks.xml ]; then
     echo "installing bitlbee configuration"
