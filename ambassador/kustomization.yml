@@ -10,3 +10,7 @@ patches:
     target:
       kind: Service
       name: ambassador
+  - path: patch_deployment.yml
+    target:
+      kind: Deployment
+      name: ambassador

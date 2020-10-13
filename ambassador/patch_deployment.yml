@@ -1,0 +1,7 @@
+# Three replicas on a single node isn't really getting us anything.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ambassador
+spec:
+  replicas: 1
