@@ -3,7 +3,7 @@ namespace: ircproxy
 commonLabels:
   app: ircproxy
 
-bases:
+resources:
   - ../base
 
 configMapGenerator:
@@ -17,11 +17,11 @@ configMapGenerator:
 
 generators:
   # decrypt sops-encrypted files
-  - ./secret-generator.yml
+  - ./secret-generator.yaml
 
 patches:
   # update the deployment with our local changes
-  - path: patch_deployment.yml
+  - path: patch_deployment.yaml
     target:
       kind: Deployment
       name: ircproxy

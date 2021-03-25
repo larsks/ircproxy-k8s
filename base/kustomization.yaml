@@ -1,0 +1,10 @@
+---
+namespace: ircproxy
+commonLabels:
+  app: ircproxy
+
+resources:
+  - deployment.yaml
+  - volumes.yaml
+  - services.yaml
+  - tcpmappings.yaml
