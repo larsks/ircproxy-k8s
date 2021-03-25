@@ -4,7 +4,7 @@ set -e
 
 DATADIR=/znc-data
 
-if [ ! -d $DATADIR/configs/znc.conf ]; then
+if [ ! -f $DATADIR/configs/znc.conf ]; then
     echo "installing znc configuration"
     GIT_SSH_COMMAND='ssh -o stricthostkeychecking=no -i /tmp/deploykeys/znc-config-deploy' \
     git clone git@github.com:larsks/ircproxy-znc-config.git /tmp/init-data

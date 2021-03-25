@@ -4,7 +4,7 @@ set -e
 
 DATADIR=/bitlbee-data
 
-if [ ! -d $DATADIR/larsks.xml ]; then
+if [ ! -f $DATADIR/larsks.xml ]; then
     echo "installing bitlbee configuration"
     GIT_SSH_COMMAND='ssh -o stricthostkeychecking=no -i /tmp/deploykeys/bitlbee-config-deploy' \
     git clone git@github.com:larsks/ircproxy-bitlbee-config.git /tmp/init-data
