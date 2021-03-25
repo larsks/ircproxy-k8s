@@ -34,7 +34,7 @@ spec:
         - name: bitlbee
           securityContext:
             runAsUser: 1000
-          image: larsks/bitlbee:e06fc8a3
+          image: larsks/bitlbee:407ab513
           volumeMounts:
             - mountPath: /bitlbee-data
               name: bitlbee-state
